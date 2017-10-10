@@ -22559,11 +22559,6 @@ var List = function (_React$Component) {
 
 	_createClass(List, [{
 		key: 'remove',
-
-		// constructor(props){
-		// 	super(props);
-		// 	this.state = {array: ['PHP', 'Python', 'NodeJS']}
-		// }
 		value: function remove(index) {
 			this.state.array.splice(index, 1);
 			this.setState(this.state);
@@ -22618,6 +22613,8 @@ var _react = __webpack_require__(24);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRedux = __webpack_require__(216);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -22636,30 +22633,30 @@ var Note = function (_React$Component) {
 	}
 
 	_createClass(Note, [{
-		key: "removeNote",
+		key: 'removeNote',
 		value: function removeNote() {
 			var _props = this.props,
 			    index = _props.index,
-			    handleRemove = _props.handleRemove;
+			    dispatch = _props.dispatch;
 
-			handleRemove(index);
+			dispatch({ type: 'REMOVE_NOTE', index: index });
 		}
 	}, {
-		key: "render",
+		key: 'render',
 		value: function render() {
 			return _react2.default.createElement(
-				"div",
-				{ className: "note-div" },
+				'div',
+				{ className: 'note-div' },
 				_react2.default.createElement(
-					"p",
-					{ className: "note-p" },
+					'p',
+					{ className: 'note-p' },
 					this.props.children
 				),
-				_react2.default.createElement("hr", null),
+				_react2.default.createElement('hr', null),
 				_react2.default.createElement(
-					"button",
+					'button',
 					{ onClick: this.removeNote.bind(this) },
-					"Delete"
+					'Delete'
 				)
 			);
 		}
@@ -22668,7 +22665,7 @@ var Note = function (_React$Component) {
 	return Note;
 }(_react2.default.Component);
 
-module.exports = Note;
+module.exports = (0, _reactRedux.connect)()(Note);
 
 /***/ }),
 /* 192 */
@@ -22683,6 +22680,8 @@ var _react = __webpack_require__(24);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRedux = __webpack_require__(216);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -22694,33 +22693,34 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var NoteForm = function (_React$Component) {
 	_inherits(NoteForm, _React$Component);
 
-	function NoteForm(props) {
+	function NoteForm() {
 		_classCallCheck(this, NoteForm);
 
-		var _this = _possibleConstructorReturn(this, (NoteForm.__proto__ || Object.getPrototypeOf(NoteForm)).call(this, props));
-
-		_this.state = { isAdding: false };
-		return _this;
+		return _possibleConstructorReturn(this, (NoteForm.__proto__ || Object.getPrototypeOf(NoteForm)).apply(this, arguments));
 	}
 
 	_createClass(NoteForm, [{
 		key: 'handleSubmit',
 		value: function handleSubmit(e) {
 			e.preventDefault();
-			this.props.handleAdd(this.refs.txt.value);
-			this.refs.txt.value = '';
-			this.toggle();
+			var dispatch = this.props.dispatch;
+
+			dispatch({ type: 'ADD_NOTE', note: this.refs.txt.value });
+			dispatch({ type: 'TOGGLE_ISADDING' });
 		}
 	}, {
 		key: 'toggle',
 		value: function toggle() {
-			this.state.isAdding = !this.state.isAdding;
-			this.setState(this.state);
+			var dispatch = this.props.dispatch;
+
+			dispatch({
+				type: 'TOGGLE_ISADDING'
+			});
 		}
 	}, {
 		key: 'render',
 		value: function render() {
-			if (this.state.isAdding) return _react2.default.createElement(
+			if (this.props.isAdding) return _react2.default.createElement(
 				'form',
 				{ className: 'noteform-div', onSubmit: this.handleSubmit.bind(this) },
 				_react2.default.createElement('input', { type: 'text', placeholder: 'Add your new note!', ref: 'txt' }),
@@ -22743,7 +22743,9 @@ var NoteForm = function (_React$Component) {
 	return NoteForm;
 }(_react2.default.Component);
 
-module.exports = NoteForm;
+module.exports = (0, _reactRedux.connect)(function (state) {
+	return { isAdding: state.isAdding };
+})(NoteForm);
 
 /***/ }),
 /* 193 */
@@ -22755,22 +22757,6 @@ module.exports = NoteForm;
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var redux = __webpack_require__(194);
-// var defaultState = {
-// 	array: ['PHP', 'React', 'NodeJS'],
-// 	isAdding: false
-// }
-// var reducer = (state = defaultState, action) => {
-// 	switch (action.type) {
-// 		case 'TOGGLE_ISADDING':
-// 			return {...state, isAdding: !state.isAdding}
-// 		case 'ADD_NOTE':
-// 			return {...state, array: [...state.array, action.note]}
-// 		case 'REMOVE_NOTE':
-// 			return {...state, array: state.array.filter((e, i) => i != action.index)}
-// 		default:
-// 			return state;
-// 	}
-// }
 
 var arrayReducer = function arrayReducer() {
 	var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['Python', 'React', 'NodeJS'];
@@ -22814,19 +22800,8 @@ window.devToolsExtension ? window.devToolsExtension() : function (f) {
 //print out the last output of state in browser
 store.subscribe(function () {
 	var str = store.getState();
-	// document.getElementById('p-details').innerHTML = JSON.stringify(str);
 });
 
-//actions
-store.dispatch({ type: 'TOGGLE_ISADDING' });
-store.dispatch({
-	type: 'ADD_NOTE',
-	note: 'Redux-Saga'
-});
-store.dispatch({
-	type: 'REMOVE_NOTE',
-	index: 1
-});
 module.exports = store;
 
 /***/ }),

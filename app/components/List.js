@@ -4,10 +4,6 @@ import NoteForm from './NoteForm';
 import {connect} from 'react-redux';
 
 class List extends React.Component{
-	// constructor(props){
-	// 	super(props);
-	// 	this.state = {array: ['PHP', 'Python', 'NodeJS']}
-	// }
 	remove(index){
 		this.state.array.splice(index, 1);
 		this.setState(this.state);
