@@ -1,0 +1,27 @@
+.note-div, .noteform-div{
+	width: 150px;
+	padding: 5px;
+	margin: 3px;
+	border: solid 3px gray;
+	border-radius: 5px;
+}
+.div-list{
+	width: 200px;
+	padding: 5px;
+	border: solid 3px black;
+	border-radius: 1px;	
+}
+.input {
+	padding-top: 20px;
+}
+.noteform-div{
+	background-color: #f0f0f5;
+}
+.noteform-button-add{
+	width: 50px;
+	padding: 5px;
+	margin: 3px;
+	border: solid 3px gray;
+	border-radius: 5px;
+	background-color: #f0f0f5;
+}
